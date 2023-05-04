@@ -5,6 +5,10 @@ node_modules
 /.pnp
 .pnp.js
 
+#dependencies on server and root 
+../.env
+../node_modules/
+
 # testing
 /coverage
 

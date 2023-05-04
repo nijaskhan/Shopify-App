@@ -1,18 +1,34 @@
 import React from 'react';
 import { Form, Button } from 'react-bootstrap';
+import { ToastContainer } from 'react-toastify';
+import { toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 import {useForm} from 'react-hook-form'
 import 'bootstrap/dist/css/bootstrap.min.css';
 import { useNavigate } from 'react-router-dom';
+import { RegisterUser } from '../../apicalls/users';
 
 function Signup() {
     const {register, handleSubmit, formState:{errors}, watch} = useForm();
     const history = useNavigate();
+    const onSubmit=async(data)=>{
+        try{
+            const response = await RegisterUser(data);
+            if(response.success){
+                toast.success(response.message);
+            }else{
+                throw new Error(response.message);
+            }
+        }catch(err){
+            toast.error(err.message);
+        }
+    }
     return (
         <div className='main-parent vh-100'>
             <section className='loginOuterbox'>
                 <h1 className='mt-4 text-center'>SIGNUP</h1>
                 <div className='py-4 pt-5'>
-                    <Form onSubmit={handleSubmit(onsubmit)}>
+                    <Form onSubmit={handleSubmit(onSubmit)}>
                         <Form.Group className="mb-3 mx-4" style={{width: '80%'}} controlId="exampleForm.ControlInput1">
                             <Form.Label>Name</Form.Label>
                             <Form.Control type="text" {...register("name", {required: true})} placeholder="name" />
@@ -42,6 +58,7 @@ function Signup() {
                             <Button type='submit' size='lg' className='btn btn-primary mx-auto'>SUBMIT</Button>
                         </Form.Group>
                     </Form>
+                    <ToastContainer />
                 </div>
                     <p onClick={()=> history('/')} className='ps-3 pb-2'>already have an account ? <span style={{color: '#4d79ff', fontWeight: 'bold', cursor: 'pointer'}}>login</span></p>
             </section>
