@@ -13,3 +13,7 @@
     border-radius: 20px;
     box-shadow: 2px 2px 45px rgba(134, 134, 134, 0.5);
 }
+
+.validationColor{
+    color: #ff3333;
+}
