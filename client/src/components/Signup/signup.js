@@ -9,18 +9,20 @@ import { useNavigate } from 'react-router-dom';
 import { RegisterUser } from '../../apicalls/users';
 
 function Signup() {
-    const {register, handleSubmit, formState:{errors}, watch} = useForm();
+    const {register, handleSubmit, formState:{errors}, watch, reset} = useForm();
     const history = useNavigate();
     const onSubmit=async(data)=>{
         try{
             const response = await RegisterUser(data);
             if(response.success){
                 toast.success(response.message);
+                reset();
             }else{
                 throw new Error(response.message);
             }
         }catch(err){
             toast.error(err.message);
+            reset();
         }
     }
     return (

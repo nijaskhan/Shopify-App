@@ -7,7 +7,8 @@ const userSchema = new mongoose.Schema({
     },
     email: {
         type: String,
-        required: true
+        required: true,
+        trim: true
     },
     mobile: {
         type: String,
@@ -16,6 +17,14 @@ const userSchema = new mongoose.Schema({
     password: {
         type: String,
         required: true
+    },
+    status: {
+        type: String,
+        default: "active"
+    },
+    profilePic: {
+        type: String,
+        default: null
     }
 },{
     timestamps: true
