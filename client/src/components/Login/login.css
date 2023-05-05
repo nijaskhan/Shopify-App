@@ -1,6 +1,9 @@
 .main-parent{
     background-image: url('./../../../public/images/loginBackground.jpeg');
     display: flex;
+    background-repeat: no-repeat;
+    background-position: center;
+    background-size: cover;
     justify-content: center;
     align-items: center;
 }
@@ -8,7 +11,6 @@
 .loginOuterbox{
     background-color: rgba(0, 0, 0, 0.4);
     border: 2px solid black;
-    width: 25vw;
     color: #fff;
     border-radius: 20px;
     box-shadow: 2px 2px 45px rgba(134, 134, 134, 0.5);

@@ -18,7 +18,7 @@ function Login() {
             if(response.success) {
                 toast.success(response.message);
                 localStorage.setItem('token', JSON.stringify(response.data));
-                window.location.href='/';              
+                window.location.href='/';
             }
             else throw new Error(response.message);
         }catch(err){
@@ -32,9 +32,9 @@ function Login() {
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [])
     return (
-        <div>
-            <div className='main-parent vh-100'>
-                <section className='loginOuterbox'>
+        <div className='container-fluid'>
+            <div className='row main-parent vh-100 vw-100'>
+                <section className='loginOuterbox col-10 col-lg-4 col-md-6 col-xs-10'>
                     <h1 className='mt-4 text-center'>Login Now</h1>
                     <div className='py-4 pt-5'>
                         <Form onSubmit={handleSubmit(onSubmit)}>

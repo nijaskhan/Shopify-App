@@ -13,7 +13,6 @@ function ProtectedPage({children}) {
             const response = await GetCurrentUser();
             if(response.success){
                 setValidateUser(response.data);
-                if(!localStorage.getItem('userDetails')) localStorage.setItem('userDetails',JSON.stringify(validateUser));
             }else{
                 throw new Error(response.message);
             }
@@ -34,9 +33,28 @@ function ProtectedPage({children}) {
     
     return (
         validateUser &&(
-            <>
+            <div className='container-fluid'>
+                <header className='row py-2 d-flex align-items-center' style={{backgroundColor: '#000000'}}>
+                    <div className='col-lg-10 col-md-7 col-6'>
+                        <div className='d-flex'>
+                        <i class="ri-shopping-bag-fill fs-1 px-2 text-light"></i>
+                        <h1 className='ps-2 py-2 text-light'>SHOPIFY</h1>
+                        </div>
+                    </div>
+                    <div className='col-lg-2 col-md-5 col-6'>
+                        <div className='text-light border justify-content-center d-flex align-items-center'>
+                            <i class="ri-user-3-line pb-2 pe-2 fs-4"></i>
+                            <p className='pt-2 fs-5'>{validateUser.name} </p> 
+                            <p className='pt-2 fs-5 px-3'>|</p>
+                            <i class="ri-logout-box-r-line pb-2 fs-4" style={{cursor: 'pointer'}} onClick={()=>{
+                                localStorage.removeItem('token');
+                                navigate('/login');
+                            }}></i>
+                        </div>
+                    </div>
+                </header>
                 {children}
-            </>
+            </div>
         )
     )
 }
