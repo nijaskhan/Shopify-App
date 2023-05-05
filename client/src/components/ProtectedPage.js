@@ -33,8 +33,8 @@ function ProtectedPage({children}) {
     
     return (
         validateUser &&(
-            <div className='container-fluid'>
-                <header className='row py-2 d-flex align-items-center' style={{backgroundColor: '#000000'}}>
+            <div className='container-fluid px-0' style={{maxHeight: '100vw', overflow: '-moz-hidden-unscrollable'}}>
+                <header className='row py-2 d-flex align-items-center px-4' style={{backgroundColor: '#000000'}}>
                     <div className='col-lg-10 col-md-7 col-6'>
                         <div className='d-flex'>
                         <i class="ri-shopping-bag-fill fs-1 px-2 text-light"></i>
