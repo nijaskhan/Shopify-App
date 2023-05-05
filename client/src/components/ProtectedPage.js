@@ -12,7 +12,8 @@ function ProtectedPage({children}) {
         try{
             const response = await GetCurrentUser();
             if(response.success){
-                setValidateUser(response);
+                setValidateUser(response.data);
+                if(!localStorage.getItem('userDetails')) localStorage.setItem('userDetails',JSON.stringify(validateUser));
             }else{
                 throw new Error(response.message);
             }
@@ -32,14 +33,11 @@ function ProtectedPage({children}) {
     }, [])
     
     return (
-        <>
-            {validateUser &&(
-                <div>
-                    {validateUser.name}
-                    {children}
-                </div>
-            )}
-        </>
+        validateUser &&(
+            <>
+                {children}
+            </>
+        )
     )
 }
 
