@@ -18,6 +18,7 @@ function Login() {
             if(response.success) {
                 toast.success(response.message);
                 localStorage.setItem('token', JSON.stringify(response.data));
+                window.location.href='/';              
             }
             else throw new Error(response.message);
         }catch(err){

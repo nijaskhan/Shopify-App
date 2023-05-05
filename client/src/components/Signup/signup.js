@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { Form, Button } from 'react-bootstrap';
 import { ToastContainer } from 'react-toastify';
 import { toast } from 'react-toastify';
@@ -16,7 +16,7 @@ function Signup() {
             const response = await RegisterUser(data);
             if(response.success){
                 toast.success(response.message);
-                reset();
+                history('/login');
             }else{
                 throw new Error(response.message);
             }
@@ -25,6 +25,12 @@ function Signup() {
             reset();
         }
     }
+    useEffect(()=>{
+        if(localStorage.getItem('token')){
+            history('/');
+        }
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [])
     return (
         <div className='main-parent vh-100'>
             <section className='loginOuterbox'>
