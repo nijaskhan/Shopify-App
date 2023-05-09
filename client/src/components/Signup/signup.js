@@ -7,13 +7,18 @@ import {useForm} from 'react-hook-form'
 import 'bootstrap/dist/css/bootstrap.min.css';
 import { useNavigate } from 'react-router-dom';
 import { RegisterUser } from '../../apicalls/users';
+import { useDispatch } from 'react-redux';
+import { changeLoaderFalse, changeLoaderTrue } from '../../redux/loadingSpinner/loadersAction';
 
 function Signup() {
+    const dispatchLoaders = useDispatch();
     const {register, handleSubmit, formState:{errors}, watch, reset} = useForm();
     const history = useNavigate();
     const onSubmit=async(data)=>{
         try{
+            dispatchLoaders(changeLoaderTrue);
             const response = await RegisterUser(data);
+            dispatchLoaders(changeLoaderFalse);
             if(response.success){
                 toast.success(response.message);
                 history('/login');

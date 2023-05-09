@@ -8,13 +8,18 @@ import 'bootstrap/dist/css/bootstrap.min.css';
 import './login.css'
 import { useNavigate } from 'react-router-dom';
 import { LoginUser } from '../../apicalls/users';
+import { useDispatch } from 'react-redux';
+import { changeLoaderFalse, changeLoaderTrue } from '../../redux/loadingSpinner/loadersAction';
 
 function Login() {
+    const dispatchLoaders = useDispatch();
     const history = useNavigate();
     const {register, handleSubmit}  = useForm();
     const onSubmit=async(data)=>{
         try{
+            dispatchLoaders(changeLoaderTrue());
             const response = await LoginUser(data);
+            dispatchLoaders(changeLoaderFalse());
             if(response.success) {
                 toast.success(response.message);
                 localStorage.setItem('token', JSON.stringify(response.data));
