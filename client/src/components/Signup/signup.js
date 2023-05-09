@@ -16,12 +16,14 @@ function Signup() {
     const history = useNavigate();
     const onSubmit=async(data)=>{
         try{
-            dispatchLoaders(changeLoaderTrue);
+            dispatchLoaders(changeLoaderTrue());
             const response = await RegisterUser(data);
-            dispatchLoaders(changeLoaderFalse);
+            dispatchLoaders(changeLoaderFalse());
             if(response.success){
                 toast.success(response.message);
-                history('/login');
+                setTimeout(()=>{
+                    history('/login');
+                }, 2000);
             }else{
                 throw new Error(response.message);
             }

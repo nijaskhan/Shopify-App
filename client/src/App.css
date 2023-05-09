@@ -1,0 +1,25 @@
+.profile-img{
+    text-align: center;
+}
+
+.profile-img .file {
+    position: relative;
+    overflow: hidden;
+    margin-top: 1rem;
+    width: 45%;
+    border: none;
+    border-radius: 0;
+    font-size: 15px;
+    background: #212529b8;
+}
+
+.profile-img .file:hover{
+    background-color: rgb(98, 44, 119);
+}
+
+.profile-img .file input {
+    position: absolute;
+    opacity: 0;
+    right: 0;
+    top: 0;
+}
