@@ -1,5 +1,6 @@
 const jwt = require('jsonwebtoken');
 const Admin = require("../models/adminModel");
+const User = require('../models/userModel');
 
 module.exports ={
     login: async(req, res)=>{
@@ -25,6 +26,21 @@ module.exports ={
                 success: false,
                 message: err.message
             });
+        }
+    },
+    getAllUsers: async(req, res)=>{
+        try{
+            const users = await User.find().exec();
+            res.send({
+                success: true,
+                message: "fetched all users",
+                users
+            })
+        }catch(err){
+            res.send({
+                success: false,
+                message: err.message
+            })
         }
     }
 }
