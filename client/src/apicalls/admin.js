@@ -8,3 +8,12 @@ export const LoginAdmin=async(payload)=>{
         return err.message;
     }
 }
+
+export const GetUsers=async()=>{
+    try{
+        const response = await adminAxiosInstance('/api/admin/get-users');
+        return response;
+    }catch(err){
+        return err.message;
+    }
+}
