@@ -11,7 +11,27 @@ export const LoginAdmin=async(payload)=>{
 
 export const GetUsers=async()=>{
     try{
-        const response = await adminAxiosInstance('/api/admin/get-users');
+        const response = await adminAxiosInstance.get('/api/admin/get-users');
+        return response;
+    }catch(err){
+        return err.message;
+    }
+}
+
+export const deleteUser=async(payload)=>{
+    try{
+        const response = await adminAxiosInstance.get(`/api/admin/delete-user/${payload}`);
+        return response;
+    }catch(err){
+        return err.message;
+    }
+}
+
+export const updateUserPost=async(payload)=>{
+    try{
+        const response = await adminAxiosInstance.post('/api/admin/update-user', {
+            data: payload
+        });
         return response;
     }catch(err){
         return err.message;

@@ -29,7 +29,7 @@ function AdminProtectedPage({ children }) {
                     </div>
                     <div className='col-lg-2 col-md-5 col-6'>
                         <div className='text-light border justify-content-center d-flex align-items-center'>
-                            <span className='d-flex' onClick={()=> navigate('/profile')} style={{cursor: 'pointer'}}>
+                            <span className='d-flex' onClick={()=> navigate('/admin')} style={{cursor: 'pointer'}}>
                                 <i class="ri-user-3-line pt-1 pe-2 fs-4"></i>
                                 <p className='pt-2 fs-5'>{admin.name} </p>
                             </span>

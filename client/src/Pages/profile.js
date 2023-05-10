@@ -59,7 +59,6 @@ function Profile() {
         }catch(err){
             toast.error(err.message);
         }
-        
     }
     return (
         <>
