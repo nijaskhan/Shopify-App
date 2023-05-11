@@ -7,18 +7,23 @@ import { toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import { useForm } from 'react-hook-form'
 import { useDispatch } from 'react-redux';
+import UserEditModal from '../../components/modal/userEditModal';
 import { changeLoaderFalse, changeLoaderTrue } from '../../redux/loadingSpinner/loadersAction';
 import { RegisterUser } from '../../apicalls/users';
 
 function UsersView() {
-    const [users, setUsers] = useState();
+    const [users, setUsers] = useState('');
     const [selectedItem, setItem] = useState(null);
+    const [showEditModal, setShowEditModal] = useState(false)
 
     const buttonRef = useRef(null);
     const confirmBtnModal = useRef(null);
     const hideConfirmBtnModel = useRef(null);
     // edit Hook 
-    
+    const handleEditUser=(user)=>{
+        setItem(user);
+        setShowEditModal(true);
+    }
     // until here
     const { register, handleSubmit, formState: { errors }, reset } = useForm();
     const dispatch = useDispatch();
@@ -40,7 +45,6 @@ function UsersView() {
     }
     // registering user
     const onSubmit = async (data) => {
-        console.log(data);
         try {
             dispatch(changeLoaderTrue());
             const response = await RegisterUser(data);
@@ -61,7 +65,6 @@ function UsersView() {
     // delete user
     const handleDeleteUser = async (id) => {
         try {
-            setItem(null);
             dispatch(changeLoaderTrue());
             const response = await deleteUser(id);
             dispatch(changeLoaderFalse());
@@ -69,11 +72,13 @@ function UsersView() {
                 toast.success(response.data.message);
                 hideConfirmBtnModel.current.click();
                 getUsers();
+                setItem(null);
             } else {
                 throw new Error("user not deleted !!");
             }
         } catch (err) {
             toast.error(err.message);
+            setItem(null);
             hideConfirmBtnModel.current.click();
         }
     }
@@ -151,7 +156,7 @@ function UsersView() {
                                                     <th >{user.email}</th>
                                                     <th >{user.mobile}</th>
                                                     <th >
-                                                        <span><i style={{ cursor: 'pointer' }} className="ri-edit-box-line"></i></span>
+                                                        <span><i style={{ cursor: 'pointer' }} onClick={()=>handleEditUser(user)} className="ri-edit-box-line"></i></span>
                                                         <span className='ps-4'><i style={{ cursor: 'pointer' }} onClick={() => handleDeleteModal(user._id)} className="ri-delete-bin-5-line"></i></span>
                                                     </th>
                                                 </tr>
@@ -164,7 +169,8 @@ function UsersView() {
                     </div>
                 </section >
             </div >
-            {/* modal for delete-user confirmation */}
+            
+            {/* modal for deleteConfirmation */}
             <button type="button" class="btn d-none btn-primary" ref={confirmBtnModal} data-bs-toggle="modal" data-bs-target="#deleteUserModal"></button>
             <div class="modal fade" id="deleteUserModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
                 <div class="modal-dialog">
@@ -185,6 +191,8 @@ function UsersView() {
             </div>
             {/* delete modale ends here */}
 
+            {/* editModal */}
+            {showEditModal && <UserEditModal user={selectedItem} modalVisibilty={setShowEditModal} />}
             <ToastContainer />
         </>
     )
