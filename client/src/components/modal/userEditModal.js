@@ -5,7 +5,7 @@ import { useDispatch } from 'react-redux';
 import { toast } from 'react-toastify';
 import { changeLoaderFalse, changeLoaderTrue } from '../../redux/loadingSpinner/loadersAction';
 
-function UserEditModal({user, modalVisibilty}) {
+function UserEditModal({user, modalVisibilty, users, setUsers}) {
     // modal Btn's close and open
     const editModalShowBtn = useRef(null);
     const closeBtn = useRef(null);
@@ -18,6 +18,7 @@ function UserEditModal({user, modalVisibilty}) {
     },[]);
     const { register, handleSubmit, formState: { errors } } = useForm();
 
+    const [editId, setEditId] = useState(user._id);
     const [editName, setEditName] = useState(user.name);
     const [editEmail, setEditEmail] = useState(user.email);
     const [editMobile, setEditMobile] = useState(user.mobile);
@@ -30,6 +31,9 @@ function UserEditModal({user, modalVisibilty}) {
             dispatch(changeLoaderFalse());
             if (response.data.success) {
                 toast.success(response.data.message);
+                window.location.reload();
+                modalVisibilty(false);
+                closeBtn.current.click();
             } else {
                 throw new Error('error occured !!!');
             }
@@ -52,6 +56,7 @@ function UserEditModal({user, modalVisibilty}) {
                             }} aria-label="Close"></button>
                         </div>
                         <form onSubmit={handleSubmit(handleUpdate)}>
+                        <div className="col-md-12"><label className="labels">Name</label><input type="text" {...register("editId", { required: true })} value={editId} onChange={(e)=>setEditId(e.target.value)} className="form-control d-none" /></div>
                             <div className="row mt-2">
                                 <div className="col-md-12"><label className="labels">Name</label><input type="text" {...register("editName", { required: true })} value={editName} onChange={(e) => setEditName(e.target.value)} className="form-control" placeholder="Name" /></div>
                                 {errors.name && <span className='validationColor pt-1'>This field is required</span>}

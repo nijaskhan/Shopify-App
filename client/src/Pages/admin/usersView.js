@@ -1,5 +1,5 @@
 import React, { useEffect, useRef, useState } from 'react';
-import { GetUsers, deleteUser } from '../../apicalls/admin';
+import { GetUsers } from '../../apicalls/admin';
 import { Form, Button } from 'react-bootstrap';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import { ToastContainer } from 'react-toastify';
@@ -10,16 +10,16 @@ import { useDispatch } from 'react-redux';
 import UserEditModal from '../../components/modal/userEditModal';
 import { changeLoaderFalse, changeLoaderTrue } from '../../redux/loadingSpinner/loadersAction';
 import { RegisterUser } from '../../apicalls/users';
+import UserDeleteModal from '../../components/modal/userDeletModal';
+// import { AdminUsersFetchFailure, AdminUsersFetchSuccess } from '../../redux/adminUsers/adminUsersAction';
 
 function UsersView() {
     const [users, setUsers] = useState('');
     const [selectedItem, setItem] = useState(null);
-    const [showEditModal, setShowEditModal] = useState(false)
+    const [showEditModal, setShowEditModal] = useState(false);
+    const [showDeleteModal, setShowDeletModal] = useState(false);
 
     const buttonRef = useRef(null);
-    const confirmBtnModal = useRef(null);
-    const hideConfirmBtnModel = useRef(null);
-    // edit Hook 
     const handleEditUser=(user)=>{
         setItem(user);
         setShowEditModal(true);
@@ -28,11 +28,11 @@ function UsersView() {
     const { register, handleSubmit, formState: { errors }, reset } = useForm();
     const dispatch = useDispatch();
 
-    const handleDeleteModal = (id) => {
-        setItem(id);
-        confirmBtnModal.current.click();
+    const handleDeleteModal = (user) => {
+        setItem(user);
+        setShowDeletModal(true);
     }
-    // getting all users
+
     const getUsers = async () => {
         try {
             dispatch(changeLoaderTrue());
@@ -43,6 +43,7 @@ function UsersView() {
             toast.error(err.message);
         }
     }
+
     // registering user
     const onSubmit = async (data) => {
         try {
@@ -62,26 +63,7 @@ function UsersView() {
             reset();
         }
     }
-    // delete user
-    const handleDeleteUser = async (id) => {
-        try {
-            dispatch(changeLoaderTrue());
-            const response = await deleteUser(id);
-            dispatch(changeLoaderFalse());
-            if (response.data.success) {
-                toast.success(response.data.message);
-                hideConfirmBtnModel.current.click();
-                getUsers();
-                setItem(null);
-            } else {
-                throw new Error("user not deleted !!");
-            }
-        } catch (err) {
-            toast.error(err.message);
-            setItem(null);
-            hideConfirmBtnModel.current.click();
-        }
-    }
+    
     useEffect(() => {
         getUsers();
         // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -95,6 +77,7 @@ function UsersView() {
                             <h1 className="mt-3 fw-bold border-bottom">Manage Users</h1>
                         </div>
                         <button type="button" className="btn btn-lg btn-primary mt-2 d-flex ms-auto" data-bs-toggle="modal" data-bs-target="#exampleModal">Add User</button>
+
                         {/* modal for add-user */}
                         <div className="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
                             <div className="modal-dialog modal-dialog-centered">
@@ -134,8 +117,10 @@ function UsersView() {
                                 </div>
                             </div>
                         </div>
-                        {/* modal till here */}
+                        
                     </div>
+
+                    {/* users table */}
                     <div className="text-center mt-5">
                         <div className="row table-responsive col-lg-12" >
                             <table className="table table-bordered table-striped table-hover" style={{ width: '100%' }} id="productsTable">
@@ -157,7 +142,7 @@ function UsersView() {
                                                     <th >{user.mobile}</th>
                                                     <th >
                                                         <span><i style={{ cursor: 'pointer' }} onClick={()=>handleEditUser(user)} className="ri-edit-box-line"></i></span>
-                                                        <span className='ps-4'><i style={{ cursor: 'pointer' }} onClick={() => handleDeleteModal(user._id)} className="ri-delete-bin-5-line"></i></span>
+                                                        <span className='ps-4'><i style={{ cursor: 'pointer' }} onClick={() => handleDeleteModal(user)} className="ri-delete-bin-5-line"></i></span>
                                                     </th>
                                                 </tr>
                                             )
@@ -167,32 +152,15 @@ function UsersView() {
                             </table>
                         </div>
                     </div>
+
                 </section >
             </div >
-            
+
             {/* modal for deleteConfirmation */}
-            <button type="button" class="btn d-none btn-primary" ref={confirmBtnModal} data-bs-toggle="modal" data-bs-target="#deleteUserModal"></button>
-            <div class="modal fade" id="deleteUserModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
-                <div class="modal-dialog">
-                    <div class="modal-content">
-                        <div class="modal-header">
-                            <h5 class="modal-title" id="exampleModalLabel">confirmation</h5>
-                            <button type="button" ref={hideConfirmBtnModel} class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                        </div>
-                        <div class="modal-body">
-                            Do you want to delete this user ?
-                        </div>
-                        <div class="modal-footer">
-                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">cancel</button>
-                            <button type="button" onClick={() => handleDeleteUser(selectedItem)} class="btn btn-danger">delete user</button>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            {/* delete modale ends here */}
+            {showDeleteModal && <UserDeleteModal user={selectedItem} modalVisibilty={setShowDeletModal} setItem={setItem} users={users} setUsers={setUsers} />}
 
             {/* editModal */}
-            {showEditModal && <UserEditModal user={selectedItem} modalVisibilty={setShowEditModal} />}
+            {showEditModal && <UserEditModal user={selectedItem} modalVisibilty={setShowEditModal} users={users} setItem={setItem} setUsers={setUsers} />}
             <ToastContainer />
         </>
     )

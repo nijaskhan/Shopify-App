@@ -11,7 +11,10 @@ export const LoginAdmin=async(payload)=>{
 
 export const GetUsers=async()=>{
     try{
+        console.log("api call");
         const response = await adminAxiosInstance.get('/api/admin/get-users');
+        console.log(response);
+        console.log("response");
         return response;
     }catch(err){
         return err.message;
