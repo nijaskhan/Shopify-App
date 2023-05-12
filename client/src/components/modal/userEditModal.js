@@ -4,8 +4,9 @@ import { updateUserPost } from '../../apicalls/admin';
 import { useDispatch } from 'react-redux';
 import { toast } from 'react-toastify';
 import { changeLoaderFalse, changeLoaderTrue } from '../../redux/loadingSpinner/loadersAction';
+import { getUsers } from '../../redux/adminUsers/adminUsersAction';
 
-function UserEditModal({user, modalVisibilty, users, setUsers}) {
+function UserEditModal({user, modalVisibilty}) {
     // modal Btn's close and open
     const editModalShowBtn = useRef(null);
     const closeBtn = useRef(null);
@@ -31,9 +32,9 @@ function UserEditModal({user, modalVisibilty, users, setUsers}) {
             dispatch(changeLoaderFalse());
             if (response.data.success) {
                 toast.success(response.data.message);
-                window.location.reload();
                 modalVisibilty(false);
                 closeBtn.current.click();
+                dispatch(getUsers());
             } else {
                 throw new Error('error occured !!!');
             }

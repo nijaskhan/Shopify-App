@@ -1,20 +1,21 @@
 import React, { useEffect, useRef, useState } from 'react';
-import { GetUsers } from '../../apicalls/admin';
+// import { GetUsers } from '../../apicalls/admin';
 import { Form, Button } from 'react-bootstrap';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import { ToastContainer } from 'react-toastify';
 import { toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import { useForm } from 'react-hook-form'
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import UserEditModal from '../../components/modal/userEditModal';
 import { changeLoaderFalse, changeLoaderTrue } from '../../redux/loadingSpinner/loadersAction';
 import { RegisterUser } from '../../apicalls/users';
 import UserDeleteModal from '../../components/modal/userDeletModal';
+import { getUsers } from '../../redux/adminUsers/adminUsersAction';
 // import { AdminUsersFetchFailure, AdminUsersFetchSuccess } from '../../redux/adminUsers/adminUsersAction';
 
 function UsersView() {
-    const [users, setUsers] = useState('');
+    // const [users, setUsers] = useState('');
     const [selectedItem, setItem] = useState(null);
     const [showEditModal, setShowEditModal] = useState(false);
     const [showDeleteModal, setShowDeletModal] = useState(false);
@@ -33,16 +34,16 @@ function UsersView() {
         setShowDeletModal(true);
     }
 
-    const getUsers = async () => {
-        try {
-            dispatch(changeLoaderTrue());
-            const users = await GetUsers();
-            dispatch(changeLoaderFalse());
-            setUsers(users.data.users);
-        } catch (err) {
-            toast.error(err.message);
-        }
-    }
+    // const getUsers = async () => {
+    //     try {
+    //         dispatch(changeLoaderTrue());
+    //         const users = await GetUsers();
+    //         dispatch(changeLoaderFalse());
+    //         setUsers(users.data.users);
+    //     } catch (err) {
+    //         toast.error(err.message);
+    //     }
+    // }
 
     // registering user
     const onSubmit = async (data) => {
@@ -52,7 +53,8 @@ function UsersView() {
             dispatch(changeLoaderFalse());
             if (response.success) {
                 toast.success(response.message);
-                setUsers([...users, data]);
+                // setUsers([...users, data]);
+                dispatch(getUsers());
                 buttonRef.current.click();
                 reset();
             } else {
@@ -64,10 +66,13 @@ function UsersView() {
         }
     }
     
+    const users = useSelector(value=>value.adminUsers.adminUsers);
     useEffect(() => {
-        getUsers();
-        // eslint-disable-next-line react-hooks/exhaustive-deps
+        dispatch(getUsers());
+        // eslint-disable-next-line
     }, []);
+    // const userSelector=useSelector(value=>value.adminUsers.adminUsers);
+
     return (
         <>
             <div>
@@ -157,10 +162,10 @@ function UsersView() {
             </div >
 
             {/* modal for deleteConfirmation */}
-            {showDeleteModal && <UserDeleteModal user={selectedItem} modalVisibilty={setShowDeletModal} setItem={setItem} users={users} setUsers={setUsers} />}
+            {showDeleteModal && <UserDeleteModal user={selectedItem} modalVisibilty={setShowDeletModal} setItem={setItem} users={users} />}
 
             {/* editModal */}
-            {showEditModal && <UserEditModal user={selectedItem} modalVisibilty={setShowEditModal} users={users} setItem={setItem} setUsers={setUsers} />}
+            {showEditModal && <UserEditModal user={selectedItem} modalVisibilty={setShowEditModal} users={users} setItem={setItem} />}
             <ToastContainer />
         </>
     )

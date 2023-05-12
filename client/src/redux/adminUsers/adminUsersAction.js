@@ -22,7 +22,7 @@ export const getUsers=()=>{
             const response = await GetUsers();
             dispatch(changeLoaderFalse());
             if(response.data.success){
-                console.log(response);
+                console.log("arrived dispatcher", response);
                 dispatch(AdminUsersFetchSuccess(response.data.users));
             }else{
                 throw new Error("error occured !!!");

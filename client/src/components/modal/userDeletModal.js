@@ -5,8 +5,9 @@ import {deleteUser} from '../../apicalls/admin';
 import { useNavigate } from 'react-router-dom';
 import { useDispatch } from 'react-redux';
 import { changeLoaderFalse, changeLoaderTrue } from '../../redux/loadingSpinner/loadersAction';
+import { getUsers } from '../../redux/adminUsers/adminUsersAction';
 
-function UserDeleteModal({ user, modalVisibilty, setItem, users, setUsers }) {
+function UserDeleteModal({ user, modalVisibilty, setItem }) {
 
     const dispatch = useDispatch();
     const navigate = useNavigate();
@@ -19,7 +20,8 @@ function UserDeleteModal({ user, modalVisibilty, setItem, users, setUsers }) {
             if (response.data.success) {
                 toast.success(response.data.message);
                 hideConfirmBtnModel.current.click();
-                setUsers(users.filter(obj=> obj._id!==user._id));
+                // setUsers(users.filter(obj=> obj._id!==user._id));
+                dispatch(getUsers());
                 setItem(null);
             } else {
                 throw new Error("user not deleted !!");
