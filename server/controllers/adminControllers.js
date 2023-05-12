@@ -70,7 +70,7 @@ module.exports = {
                     email: req.body.data.editEmail,
                     mobile: req.body.data.editMobile
                 })
-            .then((response)=>{
+            .then(()=>{
                 res.send({
                     success: true,
                     message: "user updated"
