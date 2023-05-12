@@ -1,75 +1,120 @@
-import React,{useState} from 'react';
+import React, { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import { useForm } from 'react-hook-form';
-import { updateProfile, profileUpload } from '../apicalls/users';
+import { updateProfile, profileUpload, GetCurrentUser } from '../apicalls/users';
 import { changeLoaderFalse, changeLoaderTrue } from '../redux/loadingSpinner/loadersAction';
+import { usersFetchFailure, usersFetchSuccess } from '../redux/users/usersAction';
+import { useNavigate } from 'react-router-dom';
 
 function Profile() {
     const dispatch = useDispatch();
+    const navigate = useNavigate();
     const { handleSubmit, register, formState: { errors } } = useForm();
+    // getUser
+    const getUser = async () => {
+        try {
+            dispatch(changeLoaderTrue());
+            const response = await GetCurrentUser();
+            if (response.success) {
+                dispatch(usersFetchSuccess(response.data));
+                dispatch(changeLoaderFalse());
+            } else {
+                dispatch(usersFetchFailure(response.message));
+                dispatch(changeLoaderFalse);
+                throw new Error(response.message);
+            }
+        } catch (err) {
+            dispatch(usersFetchFailure());
+            toast.error(err.message);
+            navigate('/login');
+        }
+    }
     const user = useSelector(value => value.users.users);
 
     const [profilePic, setProfilePic] = useState(user.profilePic);
     const [name, setName] = useState(user.name);
     const [email, setEmail] = useState(user.email);
     const [mobile, setMobile] = useState(user.mobile);
-    const [address, setAddress] = useState(()=> {
-        if(user.address)  return user.address.address;
+    const [address, setAddress] = useState(() => {
+        if (user.address) return user.address.address;
         else return null
     });
-    const [state, setState] = useState(()=> {
-        if(user.address)  return user.address.state;
+    const [state, setState] = useState(() => {
+        if (user.address) return user.address.state;
         else return null
     });
-    const [postcode, setPostcode] = useState(()=> {
-        if(user.address)  return user.address.postcode;
+    const [postcode, setPostcode] = useState(() => {
+        if (user.address) return user.address.postcode;
         else return null
     });
+
     // handle-profile-picture upload
-    const handleImageUpload=async(data)=>{
-        try{
+    const handleImageUpload = async (data) => {
+        try {
             const formdata = new FormData();
             formdata.append("image", data);
             dispatch(changeLoaderTrue());
             const response = await profileUpload(formdata);
             dispatch(changeLoaderFalse());
-            if(response.success){
+            if (response.success) {
                 setProfilePic(response.data);
                 toast.success("profile picture uploaded");
-            }else{
+            } else {
                 throw new Error('profile picture upload failed !!');
             }
-        }catch(err){
+        } catch (err) {
             toast.error(err.message);
         }
     }
 
-    const submit=async(data)=>{
-        try{
+    const submit = async (data) => {
+        try {
             dispatch(changeLoaderTrue());
             const response = await updateProfile(data);
             dispatch(changeLoaderFalse());
-            if(response.success){
+            if (response.success) {
                 toast.success(response.message);
-            }else{
+            } else {
                 throw new Error('error occured !!!');
             }
-        }catch(err){
+        } catch (err) {
             toast.error(err.message);
         }
     }
+    useEffect(() => {
+        getUser();
+        // eslint-disable-next-line
+    }, []);
+    useEffect(() => {
+        setProfilePic(user.profilePic);
+        setName(user.name);
+        setEmail(user.email);
+        setMobile(user.mobile);
+        setAddress(() => {
+            if (user.address) return user.address.address;
+            else return null
+        });
+        setState(()=> {
+            if (user.address) return user.address.postcode;
+            else return null
+        });
+        setPostcode(() => {
+            if (user.address) return user.address.postcode;
+            else return null
+        });
+    }, [user]);
     return (
         <>
-            <div className="container-fluid profileDiv bg-white" style={{ height:'92.4vh', minHeight: '92.4vh', maxHeight: '100vh', overflow: 'auto' }}>
+            <div className="container-fluid profileDiv bg-white" style={{ height: '92.4vh', minHeight: '92.4vh', maxHeight: '100vh', overflow: 'auto' }}>
                 <div className="row justify-content-center">
                     <div className="col-md-3 border-right text-light profile-img">
                         <div className="d-flex flex-column align-items-center text-center p-3 py-5">
                             <img className="rounded-circle mt-5" width="150px" src={profilePic || `https://st3.depositphotos.com/15648834/17930/v/600/depositphotos_179308454-stock-illustration-unknown-person-silhouette-glasses-profile.jpg`} alt='profilePic' />
                             <div class="file btn btn-lg btn-primary rounded">
                                 Change Photo
-                                <input type="file" id="file-input" onChange={(e)=> handleImageUpload(e.target.files[0])} />
+                                <input type="file" id="file-input" onChange={(e) => handleImageUpload(e.target.files[0])} />
                             </div>
                             <span className="font-weight-bold mt-3">{name}</span>
                             <span className="text-light mt-1" style={{ opacity: '0.7' }}>{email}</span>
@@ -82,21 +127,21 @@ function Profile() {
                             </div>
                             <form onSubmit={handleSubmit(submit)}>
                                 <div className="row mt-2">
-                                    <div className="col-md-12"><label className="labels">Name</label><input type="text" {...register("name", {required: true})} value={name} onChange={(e)=> setName(e.target.value)} className="form-control" placeholder="Name" /></div>
+                                    <div className="col-md-12"><label className="labels">Name</label><input type="text" {...register("name", { required: true })} value={name} onChange={(e) => setName(e.target.value)} className="form-control" placeholder="Name" /></div>
                                     {errors.name && <span className='validationColor pt-1'>This field is required</span>}
                                 </div>
                                 <div className="row">
-                                    <div className="col-md-12 mt-3"><label className="labels">Email ID</label><input type="text" {...register("email", {required: true})} className="form-control" placeholder="enter email id" value={email} onChange={(e)=> setEmail(e.target.value)} /></div>
+                                    <div className="col-md-12 mt-3"><label className="labels">Email ID</label><input type="text" {...register("email", { required: true })} className="form-control" placeholder="enter email id" value={email} onChange={(e) => setEmail(e.target.value)} /></div>
                                     {errors.email && <span className='validationColor'>This field is required</span>}
-                                    <div className="col-md-12 mt-3"><label className="labels">Mobile Number</label><input type="text" {...register("mobile", {required: true, minLength: 10, maxLength: 10})} className="form-control" placeholder="enter phone number" value={mobile} onChange={(e)=> setMobile(e.target.value)} /></div>
+                                    <div className="col-md-12 mt-3"><label className="labels">Mobile Number</label><input type="text" {...register("mobile", { required: true, minLength: 10, maxLength: 10 })} className="form-control" placeholder="enter phone number" value={mobile} onChange={(e) => setMobile(e.target.value)} /></div>
                                     {errors.mobile && <span className='validationColor'>This field is invalid</span>}
-                                    <div className="col-md-12 mt-3"><label className="labels">Address Line 1</label><input type="text" {...register("address")} className="form-control" placeholder="enter address line 1" value={address} onChange={(e)=> setAddress(e.target.value)} /></div>
+                                    <div className="col-md-12 mt-3"><label className="labels">Address Line 1</label><input type="text" {...register("address")} className="form-control" placeholder="enter address line 1" value={address} onChange={(e) => setAddress(e.target.value)} /></div>
                                     {/* <div className="col-md-12"><label className="labels">Postcode</label><input type="text" className="form-control" placeholder="postcode" value="" /></div> */}
                                     {/* <div className="col-md-12"><label className="labels">Area</label><input type="text" className="form-control" placeholder="area" value="" /></div> */}
                                 </div>
                                 <div className="row mt-3">
-                                    <div className="col-md-6"><label className="labels">State/Region</label><input type="text" {...register("state")} className="form-control" value={state} onChange={(e)=> setState(e.target.value)} placeholder="state" /></div>
-                                    <div className="col-md-6"><label className="labels">Postcode</label><input type="text" {...register("postcode")} className="form-control" value={postcode} onChange={(e)=> setPostcode(e.target.value)} placeholder="Postcode" /></div>
+                                    <div className="col-md-6"><label className="labels">State/Region</label><input type="text" {...register("state")} className="form-control" value={state} onChange={(e) => setState(e.target.value)} placeholder="state" /></div>
+                                    <div className="col-md-6"><label className="labels">Postcode</label><input type="text" {...register("postcode")} className="form-control" value={postcode} onChange={(e) => setPostcode(e.target.value)} placeholder="Postcode" /></div>
                                 </div>
                                 <div className="mt-5 text-center"><button className="btn btn-primary profile-button" type="submit">Save Profile</button></div>
                             </form>
