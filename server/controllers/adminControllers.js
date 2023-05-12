@@ -64,7 +64,6 @@ module.exports = {
     },
     updateUser: (req, res) => {
         try {
-            console.log(req.body);
             User.updateOne({_id: req.body.data.editId},
                 {
                     name: req.body.data.editName,
@@ -72,7 +71,6 @@ module.exports = {
                     mobile: req.body.data.editMobile
                 })
             .then((response)=>{
-                console.log(response);
                 res.send({
                     success: true,
                     message: "user updated"
