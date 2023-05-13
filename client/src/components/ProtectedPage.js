@@ -28,7 +28,7 @@ function ProtectedPage({ children }) {
             dispatch(usersFetchFailure());
             toast.error(err.message);
             navigate('/login');
-        }
+        } 
     }
     useEffect(() => {
         if (localStorage.getItem('token')) validateToken();
