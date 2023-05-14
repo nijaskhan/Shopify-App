@@ -48,7 +48,7 @@ function UserEditModal({user, modalVisibilty}) {
             <button type="button" className="d-none btn btn-lg btn-primary mt-2 d-flex ms-auto" ref={editModalShowBtn} data-bs-toggle="modal" data-bs-target="#editModal"></button>
             <div className="modal fade" id="editModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
                 <div className="modal-dialog modal-dialog-centered">
-                    <div className="modal-content">
+                    <div className="modal-content p-3">
                         <div className="modal-header">
                             <h5 className="modal-title" id="exampleModalLabel">Edit User</h5>
                             <button type="button" className="btn-close" data-bs-dismiss="modal" ref={closeBtn} onClick={()=> {

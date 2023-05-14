@@ -10,12 +10,32 @@ import UserEditModal from '../../components/modal/userEditModal';
 import { changeLoaderFalse, changeLoaderTrue } from '../../redux/loadingSpinner/loadersAction';
 import { RegisterUser } from '../../apicalls/users';
 import UserDeleteModal from '../../components/modal/userDeletModal';
-import { getUsers } from '../../redux/adminUsers/adminUsersAction';
+import { AdminUsersFetchSuccess, getUsers } from '../../redux/adminUsers/adminUsersAction';
+import { searchUsers } from '../../apicalls/admin';
 
 function UsersView() {
     const [selectedItem, setItem] = useState(null);
     const [showEditModal, setShowEditModal] = useState(false);
     const [showDeleteModal, setShowDeletModal] = useState(false);
+
+    const dispatch = useDispatch();
+
+    // search-setup
+    const { register: register2, handleSubmit: handleSubmit2 } = useForm()
+    const onSearchSubmit = async(data) => {
+        try{
+            dispatch(changeLoaderTrue());
+            const response = await searchUsers(data);
+            dispatch(changeLoaderFalse());
+            if(response.data.success){
+                dispatch(AdminUsersFetchSuccess(response.data.users));
+            }else{
+                throw new Error(response.data.message);
+            }
+        }catch(err){
+            toast.error(err.message)
+        }
+    }
 
     const buttonRef = useRef(null);
     const handleEditUser = (user) => {
@@ -23,7 +43,6 @@ function UsersView() {
         setShowEditModal(true);
     }
     const { register, handleSubmit, formState: { errors }, reset } = useForm();
-    const dispatch = useDispatch();
 
     const handleDeleteModal = (user) => {
         setItem(user);
@@ -50,7 +69,7 @@ function UsersView() {
         }
     }
 
-    const users = useSelector(value => value.adminUsers.adminUsers);
+    let users = useSelector(value => value.adminUsers.adminUsers);
     useEffect(() => {
         dispatch(getUsers());
         // eslint-disable-next-line
@@ -65,7 +84,17 @@ function UsersView() {
                             <h1 className="mt-3 fw-bold border-bottom">Manage Users</h1>
                         </div>
                         <button type="button" className="btn btn-lg btn-primary mt-2 d-flex ms-auto" data-bs-toggle="modal" data-bs-target="#exampleModal">Add User</button>
-
+                        {/* search */}
+                        <form onSubmit={handleSubmit2(onSearchSubmit)} >
+                            <div className='d-flex'>
+                                <div className="input-group w-25">
+                                    <input type="text" className="form-control me-2 position-relative rounded-3" {...register2("searchInput", { required: true })} style={{ backgroundColor: '#f2f2f2', border: 'none' }} placeholder="Search" />
+                                    {/* {errors2.searchInput && <span className='validationColor'>Enter something to search</span>} */}
+                                    <i className="ri-search-line position-absolute top-0 end-0 mt-1 text-muted me-3"></i>
+                                </div>
+                                <button type='submit' className='btn btn-primary'>search</button>
+                            </div>
+                        </form>
                         {/* modal for add-user */}
                         <div className="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
                             <div className="modal-dialog modal-dialog-centered">

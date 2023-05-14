@@ -10,4 +10,6 @@ router.get('/delete-user/:id', adminAuthMiddleware, adminControllers.deleteUser)
 
 router.post('/update-user', adminAuthMiddleware, adminControllers.updateUser);
 
+router.post('/searchUser', adminAuthMiddleware, adminControllers.searchUsers);
+
 module.exports = router;
