@@ -39,7 +39,7 @@ function AdminLogin() {
     }, [])
     return (
         <div className='container-fluid'>
-            <div className='row main-parent vh-100 vw-100'>
+            <div className='row main-parentAdmin vh-100 vw-100'>
                 <section className='loginOuterbox col-10 col-lg-4 col-md-6 col-xs-10'>
                     <h1 className='mt-4 text-center'>Admin Login</h1>
                     <div className='py-4 pt-5'>
