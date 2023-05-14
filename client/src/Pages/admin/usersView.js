@@ -21,14 +21,20 @@ function UsersView() {
     const dispatch = useDispatch();
 
     // search-setup
-    const { register: register2, handleSubmit: handleSubmit2 } = useForm()
+    const { register: register2, handleSubmit: handleSubmit2, formState: {errors: errors2} } = useForm()
     const onSearchSubmit = async(data) => {
         try{
             dispatch(changeLoaderTrue());
             const response = await searchUsers(data);
             dispatch(changeLoaderFalse());
             if(response.data.success){
-                dispatch(AdminUsersFetchSuccess(response.data.users));
+                console.log(response.data.users.length);
+                if(response.data.users.length>=1){
+                    dispatch(AdminUsersFetchSuccess(response.data.users));
+                }else {
+                    dispatch(getUsers());
+                    throw new Error("No users Found");
+                }
             }else{
                 throw new Error(response.data.message);
             }
@@ -88,12 +94,12 @@ function UsersView() {
                         <form onSubmit={handleSubmit2(onSearchSubmit)} >
                             <div className='d-flex'>
                                 <div className="input-group w-25">
-                                    <input type="text" className="form-control me-2 position-relative rounded-3" {...register2("searchInput", { required: true })} style={{ backgroundColor: '#f2f2f2', border: 'none' }} placeholder="Search" />
-                                    {/* {errors2.searchInput && <span className='validationColor'>Enter something to search</span>} */}
+                                    <input type="text" className="form-control me-2 position-relative rounded-3" {...register2("searchInput", { required: true})} style={{ backgroundColor: '#f2f2f2', border: 'none' }} placeholder="Search" />
                                     <i className="ri-search-line position-absolute top-0 end-0 mt-1 text-muted me-3"></i>
                                 </div>
                                 <button type='submit' className='btn btn-primary'>search</button>
                             </div>
+                            {errors2.searchInput && <p className='validationColor'>Enter something to search</p>}
                         </form>
                         {/* modal for add-user */}
                         <div className="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
@@ -134,9 +140,7 @@ function UsersView() {
                                 </div>
                             </div>
                         </div>
-
                     </div>
-
                     {/* users table */}
                     <div className="text-center mt-5">
                         <div className="row table-responsive col-lg-12" >
