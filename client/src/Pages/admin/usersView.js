@@ -1,5 +1,4 @@
 import React, { useEffect, useRef, useState } from 'react';
-// import { GetUsers } from '../../apicalls/admin';
 import { Form, Button } from 'react-bootstrap';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import { ToastContainer } from 'react-toastify';
@@ -12,20 +11,17 @@ import { changeLoaderFalse, changeLoaderTrue } from '../../redux/loadingSpinner/
 import { RegisterUser } from '../../apicalls/users';
 import UserDeleteModal from '../../components/modal/userDeletModal';
 import { getUsers } from '../../redux/adminUsers/adminUsersAction';
-// import { AdminUsersFetchFailure, AdminUsersFetchSuccess } from '../../redux/adminUsers/adminUsersAction';
 
 function UsersView() {
-    // const [users, setUsers] = useState('');
     const [selectedItem, setItem] = useState(null);
     const [showEditModal, setShowEditModal] = useState(false);
     const [showDeleteModal, setShowDeletModal] = useState(false);
 
     const buttonRef = useRef(null);
-    const handleEditUser=(user)=>{
+    const handleEditUser = (user) => {
         setItem(user);
         setShowEditModal(true);
     }
-    // until here
     const { register, handleSubmit, formState: { errors }, reset } = useForm();
     const dispatch = useDispatch();
 
@@ -33,17 +29,6 @@ function UsersView() {
         setItem(user);
         setShowDeletModal(true);
     }
-
-    // const getUsers = async () => {
-    //     try {
-    //         dispatch(changeLoaderTrue());
-    //         const users = await GetUsers();
-    //         dispatch(changeLoaderFalse());
-    //         setUsers(users.data.users);
-    //     } catch (err) {
-    //         toast.error(err.message);
-    //     }
-    // }
 
     // registering user
     const onSubmit = async (data) => {
@@ -53,7 +38,6 @@ function UsersView() {
             dispatch(changeLoaderFalse());
             if (response.success) {
                 toast.success(response.message);
-                // setUsers([...users, data]);
                 dispatch(getUsers());
                 buttonRef.current.click();
                 reset();
@@ -65,13 +49,12 @@ function UsersView() {
             reset();
         }
     }
-    
-    const users = useSelector(value=>value.adminUsers.adminUsers);
+
+    const users = useSelector(value => value.adminUsers.adminUsers);
     useEffect(() => {
         dispatch(getUsers());
         // eslint-disable-next-line
     }, []);
-    // const userSelector=useSelector(value=>value.adminUsers.adminUsers);
 
     return (
         <>
@@ -122,7 +105,7 @@ function UsersView() {
                                 </div>
                             </div>
                         </div>
-                        
+
                     </div>
 
                     {/* users table */}
@@ -146,7 +129,7 @@ function UsersView() {
                                                     <th >{user.email}</th>
                                                     <th >{user.mobile}</th>
                                                     <th >
-                                                        <span><i style={{ cursor: 'pointer' }} onClick={()=>handleEditUser(user)} className="ri-edit-box-line"></i></span>
+                                                        <span><i style={{ cursor: 'pointer' }} onClick={() => handleEditUser(user)} className="ri-edit-box-line"></i></span>
                                                         <span className='ps-4'><i style={{ cursor: 'pointer' }} onClick={() => handleDeleteModal(user)} className="ri-delete-bin-5-line"></i></span>
                                                     </th>
                                                 </tr>
@@ -157,13 +140,10 @@ function UsersView() {
                             </table>
                         </div>
                     </div>
-
                 </section >
             </div >
-
             {/* modal for deleteConfirmation */}
             {showDeleteModal && <UserDeleteModal user={selectedItem} modalVisibilty={setShowDeletModal} setItem={setItem} users={users} />}
-
             {/* editModal */}
             {showEditModal && <UserEditModal user={selectedItem} modalVisibilty={setShowEditModal} users={users} setItem={setItem} />}
             <ToastContainer />
