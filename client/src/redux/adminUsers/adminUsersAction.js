@@ -18,17 +18,14 @@ export const getUsers=()=>{
     return async(dispatch)=>{
         try{
             dispatch(changeLoaderTrue());
-            console.log("arrived here");
             const response = await GetUsers();
             dispatch(changeLoaderFalse());
             if(response.data.success){
-                console.log("arrived dispatcher", response);
                 dispatch(AdminUsersFetchSuccess(response.data.users));
             }else{
                 throw new Error("error occured !!!");
             }
         }catch(err){
-            console.log("disptach error", err);
             dispatch(AdminUsersFetchFailure(err.message));
         }
     }
