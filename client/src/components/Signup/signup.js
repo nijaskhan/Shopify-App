@@ -76,7 +76,7 @@ function Signup() {
                         </Form>
                         <ToastContainer />
                     </div>
-                        <p onClick={()=> history('/')} className='ps-3 pb-2'>already have an account ? <span style={{color: '#4d79ff', fontWeight: 'bold', cursor: 'pointer'}}>login</span></p>
+                        <p onClick={()=> history('/login')} className='ps-3 pb-2'>already have an account ? <span style={{color: '#4d79ff', fontWeight: 'bold', cursor: 'pointer'}}>login</span></p>
                 </section>
             </div> 
         </div>
